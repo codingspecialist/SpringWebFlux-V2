@@ -1,4 +1,4 @@
-# SpringWebFlux-V1
+# SpringWebFlux-V2
 
 ## SSE 프로토콜을 이용한 WebFlux 체험기
 
