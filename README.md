@@ -22,4 +22,67 @@
 - 리턴시 sink.asFlux().map(e->ServerSentEvent.builder(e).build()); 사용
 - MIME타입은 TEXT_EVENT_STREAM_VALUE
 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            border: 1px black solid;
+        }
+    </style>
+</head>
+
+<body>
+    <div>알림:<span id="notify">1</span></div>
+    <div class="container">
+        <div id="items">
+
+        </div>
+
+    </div>
+
+    <script>
+
+        fetch("http://localhost:8080/")
+            .then(res => res.json()).then(res => {
+                console.log(res);
+
+                let items_el = document.querySelector("#items");
+
+                for (i of res) {
+                    let item_el = document.createElement("div");
+                    item_el.innerHTML = `게시글${i}`;
+                    items_el.appendChild(item_el);
+                }
+
+                const eventSource = new EventSource("http://localhost:8080/sse");
+                eventSource.onmessage = event => {
+                    console.log(event.data);
+                    let notify_el = document.querySelector("#notify");
+                    console.log(notify_el.textContent);
+                    let num = Number(notify_el.textContent);
+                    num = num + 1;
+                    notify_el.innerHTML = num;
+                };
+                eventSource.onerror = error => {
+                    eventSource.close();
+                };
+
+
+            });
+    </script>
+</body>
+
+</html>
+```
+
 ### R2DBC 사용해서 V2 만들어볼 계획임.
